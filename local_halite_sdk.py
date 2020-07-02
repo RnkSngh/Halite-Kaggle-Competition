@@ -4,16 +4,18 @@ Created on Fri Jun 19 15:23:24 2020
 
 @author: User
 """
-import gym
+
 from kaggle_environments import make
 from kaggle_environments.envs.halite.helpers import *
 from RL_agent import *
+from greedy_agent import *
+import pickle 
 
 #initialize agent
 learning_agent = rl_agent()
 learning_agent_function = learning_agent.run_learning_agent
 
-agents = {"learning":learning_agent_function}
+agents = {"learning":learning_agent_function, 'greedy':greedy_agent}
 
 # Create a test environment for use later
 board_size = 21
@@ -21,7 +23,20 @@ env = make("halite", {"agentTimeout":60})
 env.agents.update(agents)
 agent_count = 4
 env.reset(agent_count)
-result = env.run(["learning", "random", "random", "random" ])
+
+#initialize a variable that will store saved Results to train later
+result_list = []
+for i in range(500):
+    result = env.run(["greedy", "greedy", "greedy", "greedy" ])
+    result_list.append(result)
+    print (i)
+    rule_update_values(learning_agent, result, .9, .8)
+
+
+f = open('result_list2.pickl', 'wb')
+pickle.dump(result_list, f)
+f.close()
+
 #env.render(mode="ipython", width=800, height=600)
 
 

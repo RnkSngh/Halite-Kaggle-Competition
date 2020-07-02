@@ -44,7 +44,65 @@ class Net(nn.Module):
       #  x= F.relu(self.fc2(x))
         return x
     
- 
+    #net without pooling
+class NoPoolNet(nn.Module):
+    def __init__(self):
+        super(NoPoolNet, self).__init__()
+        
+        self.conv1 = nn.Conv2d(4, 6, 3)
+        
+        self.conv2 = nn.Conv2d(6,16,3)
+        self.fc1 = nn.Linear(16*9, 16)
+        self.fc2 = nn.Linear(16, 1)
+        
+        
+        
+    def forward(self, x):
+        x = self.conv1(x)
+        x = torch.sigmoid(x)
+        x = F.max_pool2d(x, (2,2))
+        x = self.conv2(x)
+        x = torch.sigmoid(x)
+        x = F.max_pool2d(x,2)
+        
+        x = x.view(-1, 16*9)
+        x = self.fc1(x)
+        x = torch.sigmoid(x)
+        x = self.fc2(x)
+        x = torch.sigmoid(x)
+      #  x= F.relu(self.fc2(x))
+        return x
+    
+    
+        #net without pooling
+class NoPoolNet(nn.Module):
+    def __init__(self):
+        super(NoPoolNet, self).__init__()
+        
+        self.conv1 = nn.Conv2d(4, 6, 3)
+        
+        self.conv2 = nn.Conv2d(6,16,3)
+        self.fc1 = nn.Linear(16*9, 16)
+        self.fc2 = nn.Linear(16, 1)
+        
+        
+        
+    def forward(self, x):
+        x = self.conv1(x)
+        x = torch.sigmoid(x)
+        x = F.max_pool2d(x, (2,2))
+        x = self.conv2(x)
+        x = torch.sigmoid(x)
+        x = F.max_pool2d(x,2)
+        
+        x = x.view(-1, 16*9)
+        x = self.fc1(x)
+        x = torch.sigmoid(x)
+        x = self.fc2(x)
+        x = torch.sigmoid(x)
+      #  x= F.relu(self.fc2(x))
+        return x
+    
 def train(neural_net, training_inputs, training_outputs, criterion, optimizer):
     optimizer.zero_grad()
     current_outputs = neural_net(training_inputs)
@@ -83,12 +141,16 @@ def convert_inputs(observation):
 
 
 #updates the values after a given game if it was not an exploratory move. Gamma is the future reduction of moves
-def update_values(neural_net, game_results, exploratory_moves, learning_rate, gamma):
+def update_values(agent, game_results, exploratory_moves, learning_rate, gamma):
     future_reward = 0 #stores reward of future states
+    neural_net = agent.net
     for index, step in reversed(list(enumerate(game_results))):
-        if not( exploratory_moves[index]): #only update value function for non-exploratory moves
-            obs = step[0]['observation']
-            max_opponent_score = 0 #method is player score
+        obs = step[0]['observation']
+        if step[0].status != 'ACTIVE': #continue if we don't have any moves for this agent
+            continue
+        if not( exploratory_moves[index-1]): #only update value function for non-exploratory moves
+            
+            max_opponent_score = 0 #method is player score_
             agent_score = obs['players'][0][0]
             for player in obs['players'][1:]:
                 if max_opponent_score< player[0]:
@@ -99,9 +161,36 @@ def update_values(neural_net, game_results, exploratory_moves, learning_rate, ga
             old_value = neural_net(training_inputs)
             new_value = reward + gamma*future_reward
             training_value = (1-learning_rate)*old_value + (learning_rate*new_value)
-            train(neural_net, training_inputs, training_value, neural_net.optimizer, neural_net.criterion)
+            train(neural_net, training_inputs, training_value, agent.criterion, agent.optimizer)
             
-            future_reward = neural_net(training_value) #update value for next iteration
+            future_reward = neural_net(training_inputs) #update value for next iteration
+    agent.learning_moves = [] #clear all agent moves
+    return
+
+
+#updates the values after a given game for modeling an agent that isn't the agent itself
+def rule_update_values(agent, game_results, learning_rate, gamma):
+    future_reward = 0 #stores reward of future states
+    neural_net = agent.net
+    for index, step in reversed(list(enumerate(game_results))):
+        obs = step[0]['observation']
+        if step[0].status != 'ACTIVE': #continue if we don't have any moves for this agent
+            continue
+
+        max_opponent_score = 0 #method is player score_
+        agent_score = obs['players'][0][0]
+        for player in obs['players'][1:]:
+            if max_opponent_score< player[0]:
+                max_opponent_score = player[0]
+        
+        reward = agent_score - max_opponent_score #reward for immediate step
+        training_inputs = convert_inputs(obs)
+        old_value = neural_net(training_inputs)
+        new_value = reward + gamma*future_reward
+        training_value = (1-learning_rate)*old_value + (learning_rate*new_value)
+        train(neural_net, training_inputs, training_value, agent.criterion, agent.optimizer)
+        
+        future_reward = neural_net(training_inputs) #update value for next iteration
     return
 
 # =============================================================================

@@ -15,10 +15,11 @@ from kaggle_environments.envs.halite.helpers import *
 class rl_agent():
     def __init__(self):
         self.learning_moves = [] #potential for not using all 400 but allocate just in case 
-        self.net = Net()
-        optimizer = optim.SGD(self.net.parameters(), lr=0.01)
-        criterion = nn.MSELoss()
-        self.epsilon = 0 #30 percent chance of having a learnign move
+        self.net = NoPoolNet()
+        self.optimizer = optim.SGD(self.net.parameters(), lr=0.01)
+        self.criterion = nn.MSELoss()
+        self.epsilon = 30 #percent chance of having a learning move
+        return
         
     #iterate through all possible moves, caluclates the value sof all moves, and then either explores or takes the best action. Epsilon is the percent of exploratory moves
 
@@ -30,41 +31,51 @@ class rl_agent():
         ship_actions = ["NORTH", "SOUTH", "EAST", "WEST", "CONVERT", None]
         #player = obs['players'][0]
         board = Board(obs, config)
+        best_board = Board(obs, config)
+        
         shipyards = board.current_player.shipyards
         ships = board.current_player.ships
         random_int = random.randint(1, 101)
         if random_int>self.epsilon:  #This will be an exploratory session 
             #explore all possible input combinations for ships and shipyards, and combine them
-            shipyard_moves = product(shipyard_actions, repeat = len(shipyards))
-            ship_moves = product(ship_actions, repeat = len(ships))
-            possible_moves = product(shipyard_moves, ship_moves)
+            #shipyard_moves = product(shipyard_actions, repeat = len(shipyards))
+           # ship_moves = product(ship_actions, repeat = len(ships))
+           # #possible_moves = product(shipyard_moves, ship_moves)
             
             best_action = {}
             best_value = 0
-            print(len(ships), len(shipyards))
-            #iterate throug each move set and find values for each move
-            for move_set in possible_moves:
-                #actions = {}
-                shipyard_moves_set = move_set[0]
-                ship_moves_set = move_set[1]
-                for move_index, shipyard in enumerate(shipyards):
-                    shipyard_move = shipyard_moves_set[move_index]
-                    shipyard.next_action = [ShipyardAction[shipyard_move] if shipyard_move else None][0]
-                    #if shipyard_move:
-                     #   actions[shipyard] = shipyard_move
-                for move_index, ship in enumerate(ships):
-                    ship_move = ship_moves_set[move_index]
-                    ship.next_action = [ShipAction[ship_move] if ship_move else None][0]
-                    #if ship_move: #ppend action if not None
-                     #   actions[ship] = ship_move
-                next_obs = board.next().observation
-                obs_tensor = convert_inputs(next_obs)
-                current_value = self.net(obs_tensor).item()
-                if current_value> best_value:
-                    best_action = board.current_player.next_actions
-                    best_value = current_value
-            self.learning_moves.append(0) #indicate taht this was an exploratory move
-            return best_action #TO DO: get rid of 
+            
+            for shipyard in shipyards:
+                best_value = 0
+                best_move = None
+                for shipyard_move in shipyard_actions:
+                    shipyard.next_action = ShipyardAction[shipyard_move] if shipyard_move else None
+                    next_obs = board.next().observation
+                    obs_tensor = convert_inputs(next_obs)
+                    current_value = self.net(obs_tensor).item()
+                    if current_value> best_value:
+                        best_move = shipyard_move
+                        best_value = current_value
+                shipyard.next_action = ShipyardAction[best_move] if best_move else None
+                
+                
+            for ship in ships: 
+                best_value = 0
+                best_move = None
+                for ship_move in ship_actions:
+                    ship.next_action = ShipAction[ship_move] if ship_move else None
+                    next_obs = board.next().observation
+                    obs_tensor = convert_inputs(next_obs)
+                    current_value = self.net(obs_tensor).item()
+                    if current_value > best_value:
+                        best_move = ship_move
+                        best_value = current_value
+                ship.next_action = ShipAction[best_move] if best_move else None
+                    
+            best_action = board.current_player.next_actions
+            self.learning_moves.append(0)
+            return best_action
+        
         else:# we are taking a learnign move, and thus will take random things
             for shipyard in shipyards:
                 random_move = random.choice(shipyard_actions)
