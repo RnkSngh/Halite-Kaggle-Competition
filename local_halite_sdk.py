@@ -11,6 +11,8 @@ from RL_agent import *
 from greedy_agent import *
 import pickle 
 
+
+net = NoCovNet()
 #initialize agent
 learning_agent = rl_agent()
 learning_agent_function = learning_agent.run_learning_agent
@@ -30,7 +32,7 @@ for i in range(500):
     result = env.run(["greedy", "greedy", "greedy", "greedy" ])
     result_list.append(result)
     print (i)
-    rule_update_values(learning_agent, result, .9, .8)
+    rule_update_values(learning_agent, result, .1, .8)
 
 
 f = open('result_list2.pickl', 'wb')

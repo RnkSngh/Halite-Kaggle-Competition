@@ -13,9 +13,9 @@ from kaggle_environments.envs.halite.helpers import *
 
 
 class rl_agent():
-    def __init__(self):
+    def __init__(self, net):
         self.learning_moves = [] #potential for not using all 400 but allocate just in case 
-        self.net = NoPoolNet()
+        self.net = net
         self.optimizer = optim.SGD(self.net.parameters(), lr=0.01)
         self.criterion = nn.MSELoss()
         self.epsilon = 30 #percent chance of having a learning move

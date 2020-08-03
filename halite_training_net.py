@@ -75,13 +75,13 @@ class NoPoolNet(nn.Module):
     
     
         #net without pooling
-class NoPoolNet(nn.Module):
+class NoCovNet(nn.Module):
     def __init__(self):
-        super(NoPoolNet, self).__init__()
+        super(NoCovlNet, self).__init__()
         
-        self.conv1 = nn.Conv2d(4, 6, 3)
+        #self.conv1 = nn.Conv2d(4, 6, 3)
         
-        self.conv2 = nn.Conv2d(6,16,3)
+        #self.conv2 = nn.Conv2d(6,16,3)
         self.fc1 = nn.Linear(16*9, 16)
         self.fc2 = nn.Linear(16, 1)
         
@@ -193,13 +193,4 @@ def rule_update_values(agent, game_results, learning_rate, gamma):
         future_reward = neural_net(training_inputs) #update value for next iteration
     return
 
-# =============================================================================
-# net = Net()
-# optimizer = optim.SGD(net.parameters(), lr=0.01)
-# criterion = nn.MSELoss()
-# 
-# input_tensor = torch.randn(1,4,21,21)
-# output_tensor = torch.randn(1, 1)
-# 
-# train(net, input_tensor, output_tensor, criterion, optimizer)
-# =============================================================================
+
