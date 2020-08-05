@@ -1,11 +1,13 @@
 # Halite-Kaggle-Competition
-This repo is a set of tools to build and train a multi-agent reinforcement learning agent to compete in the Halite Kaggle competition. This still needs a lot of work, but should be still dont' have the process running to where I want it to be, and have halted progress on this for other projects, but I wanted to take a break and see what I have learned and publish this so that i can go back and wrok on this when i am more experienced with reinforcement learning. 
+This repo is a set of tools to build and train reinforcement learning agents that can play [Halite](https://www.kaggle.com/c/halite), and a few weakly trained starting agents in PyTorch. These sample agents still need to be further optimized, but serve as a good starting point for deciding reinforcement learning strategies. 
 
-Sample agents:
+# Sample agents:
 Below are the results from training the agents thus far. There will still need to be trained more - work still might need to be done in testing out different paramaters and architectures. 
 
-# Running agents on AWS
-To run the agent, you should run the instance. After running an instance, the correct environment neesd to be set up 
+
+
+# Running agents in a Docker conttainer
+The  agent can be trained using Jupyter Notebooks hosted on a remote machine using the haliterltraining docker container, which contains an installation of PyTorch and kaggle-environments . The container can be imported by running  ```docker pull rnksngh/haliterltraining``` from the command line. The notebook can be run through the commandline using ```docker run -p 8888:8888 rnksngh/haliterltraining```. Once the notebook is running, the agent can be trained using the ```local_halite_sdk.ipynb``` file. 
 
 # Neural Net Architecture: 
 The input is given to the neural net from a 2x2x21 vector, . The first channel is x 
@@ -16,3 +18,4 @@ Y script gets you to here.
 
 z script gets you to here. 
 
+# Saving agents in Pytorch 
