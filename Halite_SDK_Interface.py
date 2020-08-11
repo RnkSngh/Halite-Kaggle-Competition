@@ -11,7 +11,7 @@ from RL_agent import *
 from greedy_agent import *
 import pickle 
 
-
+agentname = "Neural Net " #name of file that will contain trained neural net paramaters
 net = NoCovNet()
 #initialize agent
 learning_agent = rl_agent()
@@ -34,10 +34,11 @@ for i in range(500):
     print (i)
     rule_update_values(learning_agent, result, .1, .8)
 
-
+torch.save(model.state_dict(), agent_name)
 f = open('result_list2.pickl', 'wb')
 pickle.dump(result_list, f)
 f.close()
+
 
 #env.render(mode="ipython", width=800, height=600)
 
