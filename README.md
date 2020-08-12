@@ -1,25 +1,28 @@
 # Halite-Kaggle-Competition
 This repo includes a set of tools that can be used to build and train reinforcement learning agents to play [Halite](https://www.kaggle.com/c/halite). The tools included are:
-* A PyTorch neural net used for estimating the value of a given game state
-* A set of functions (and a script for testing these functions) for interfacing between the Halite SDK and the PyTorch neural net
-* A Docker container that can be used to remotely train agents
-* Some sample agents produced using tools in this repository. 
+* [A few sample reinforcement learning agents to play the game](#sample-agents)
+* [A Docker container that can be used to remotely train agents](#running-agents-in-a-docker-container)
+* [A PyTorch neural net used for estimating the value of a given game state](#neural-net-design)
 
 # Sample agents:
-This section includes some of the sample agents trained using this repository. Note - these will certainly need some tweaking, but might be able to offer a starting point for further optimization. All agents were trained against [greedy rule-based agents](https://www.kaggle.com/tmbond/halite-example-agents).  For each sample, a gif containing a snippet from a played game that represents behavior specific to the agent, with the agent being represented as the yellow-colored team, starting on the upper-left side of the game grid. 
+This section includes some of the sample agents trained using the tools in repository, and can serve as a starting point for further optimization. All agents were trained against [greedy rule-based agents](https://www.kaggle.com/tmbond/halite-example-agents).  For each sample included in this section, a gif containing a snippet from a played game that represents behavior specific to the agent, with the agent being represented as the yellow-colored team, starting on the upper-left side of the game grid. 
 
 ## Loading agents
 The agents are provided in the [SampleAgents](./SampleAgents) directory, and can be imported using PyTorch's ```torch.load``` function. 
 Below are the results from training the agents thus far. There will still need to be trained more - work still might need to be done in testing out different paramaters and architectures.
 
 ### GreedyTraining
+![](./GameGifs/imitation-learning.gif)
 This agent was trained using imitation learning on a greedy rule-based agent for 500 games (i.e. the agent was trained on games of 4 greedy rule-based agents playing against eachother). Though imitation learning is typically used for problems with spare reward signals, and the reward for this environment is not sparse as it is given at the end of each timestep, imitation learning might decrease the training data required to learn behavior . Improvements can be made on this imitation strategy by imitating more sophisticated rule-based agents. Though this approach ulitmately limits the agent's performance to the performance of the rule based agents it is trained on, it can be used to train a starting agent that can be further optimized using exploratory learning. 
 
 ### ExploratoryTrainingGamma-0.1
+![](./GameGifs/exploratory_gamma-0.1.gif)
 This agent was trained with a discount factor of 0.1 for 500 games.  This agent was able to learn that both collecting Halite and depositing the cargo back to a shipyard would increase the reward, but was not able to deposit halite to shipyards consistently.
 ### ExploratoryTrainingGamma-0.8
+![](./GameGifs/exploratory_gamma-0.8.gif)
 This agent was trained with a discount factor of 0.8 for 500 games. Though this agent did not learn to bring back halite cargo to a shipyard, it did learn that converting ships that were carying cargo would still lead to increased rewards.
 ### ExploratoryTrainingGamma-1.0 
+![](./GameGifs/exploratory_gamma-1.0.gif)
 This agent learned to  spawn a lot of ships and shipyards, but this agent performs worse than the agents with lower discount factors, as the spawned ships tend to crash into eachother, and are not able to mine more halite to recoup their costs. Intuitively, agents with lower values for ```gamma``` might tend to. However, this was not the case here, as only the agent with the lowest value of gamma learned behavior that optimized for the long term (i.e. depositing halite to shipyards). This failure to learn better long term behavior might be indicative of having too simple of neural net architecture, as the agent could not differentiate betwene situations where it is good to spawn ships and not. 
 
 ## Expanding on training
