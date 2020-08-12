@@ -14,13 +14,13 @@ The agents are provided in the [SampleAgents](./SampleAgents) directory, and can
 ![](./GameGifs/imitation-learning.gif)
 This agent was trained using imitation learning on a greedy rule-based agent for 500 games (i.e. the agent was trained on games of 4 greedy rule-based agents playing against each other). Though imitation learning is typically used for problems with spare reward signals, and the reward for this environment is not sparse as it is given at the end of each timestep, imitation learning might decrease the training data required to learn behavior that spans many moves (e.g. having ships learn they must visit a shipyard to deposit their cargo). Improvements can be made for this sample agent by using more sophisticated rule-based agents for training. Though this approach ultimately limits the agent's performance to that of the rule based agents it is trained on, it can be used to train a starting agent that can be further optimized using exploratory learning. 
 
-### ExploratoryTrainingGamma-0.1
+### ExploratoryTrainingGamma=0.1
 ![](./GameGifs/exploratory_gamma-0.1.gif)
 This agent was trained with a discount factor of 0.1 for 500 games.  This agent was able to learn that both collecting Halite and depositing the cargo back to a shipyard would increase the reward, but was not able to deposit halite to shipyards consistently.
-### ExploratoryTrainingGamma-0.8
+### ExploratoryTrainingGamma=0.8
 ![](./GameGifs/exploratory_gamma-0.8.gif)
 This agent was trained with a discount factor of 0.8 for 500 games. Though this agent did not learn to bring back halite cargo to a shipyard, it did learn that converting ships that were carrying cargo would still lead to increased rewards.
-### ExploratoryTrainingGamma-1.0 
+### ExploratoryTrainingGamma=1.0 
 ![](./GameGifs/exploratory_gamma-1.0.gif)
 This agent learned to  spawn a lot of ships and shipyards, but this agent performs worse than the above exploratory agents, as the spawned ships tend to crash into each other, and are not able to mine more halite to recover their costs. Intuitively, agents with higher values for ```gamma``` would be better at learning longer-term behavior, as future rewards are discounted less. However, this was not the case here, the agent with the lowest value of gamma learned behavior that optimized for the long term (i.e. depositing halite to shipyards). This failure to learn better long-term behavior might be indicative of overfitting or having too simple of neural net architecture, as the agent could not properly predict when to spawn ships. 
 
