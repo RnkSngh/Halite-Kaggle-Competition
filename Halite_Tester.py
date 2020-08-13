@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 Tests the halite reinforcement learning agent to ensure outputs and future changes do not affect past tests,
 and that the libary is compatible with the halite sdk
-@author: User
 """
 import unittest
 from halite_training_net import *
