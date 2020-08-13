@@ -1,8 +1,8 @@
 """
-This file contains the agent class that gives infromation to the Halite environment in the local_halite_sdk.py file during games. This class uses the PyTorch neural net specified in the RL_agent.py file to model the value function of game states, and thus is also accessed when training the RL agent. 
+This file contains the agent class that is called by the Halite Kaggle Environment in the local_halite_sdk.py file during games. This class uses the PyTorch neural net specified in the RL_agent.py file to model the value function of game states.
 """
 
-###################### Modules ###########################
+
 import random 
 from halite_training_net import * 
 from kaggle_environments.envs.halite.helpers import *
