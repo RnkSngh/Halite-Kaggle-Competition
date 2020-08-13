@@ -12,11 +12,11 @@ class rl_agent():
     """
     A reinforcement learning agent used to give moves to the Halite SDK through the run_learning_agent method. 
     
-    self.net holds the PyTorch neural net used to estimate the value of a state. The self.optimizer and self.criterion are used by PyTorch during the gradient descent procses.       self.learning_moves is an array that keeps track track of exploratory moves, and is used decide on what states to train the agent on. 
+    self.net holds the PyTorch neural net used to estimate the value of a state. The self.optimizer and self.criterion are used by PyTorch during the gradient descent process.       self.learning_moves is an array that keeps track of exploratory moves, and is used decide on what states to train the agent on. 
     """
     
     def __init__(self, net):
-        self.learning_moves = [] #keep track of which moves in a played game are learning moves. 1 indicates an exploratory move, 0 indicates an expoitative move
+        self.learning_moves = [] #keep track of which moves in a played game are learning moves. 1 indicates an exploratory move, 0 indicates an exploitative move
         self.net = net 
         self.optimizer = optim.SGD(self.net.parameters(), lr=0.01)
         self.criterion = nn.MSELoss()
@@ -34,7 +34,7 @@ class rl_agent():
         obs : dict
             An observation dictionary given by the the Halite SDK corresponding to the state within a Halite game.
         config: dict
-            Config paramaters of the game environment in which this function is called; used to construct possible observations for each possible move, which are then inputted               into a neural net
+            Config parameters of the game environment in which this function is called; used to construct possible observations for each possible move, which are then inputted               into a neural net
         '''
         config  = config[0]
         #shipyard_actions and ship_actions enumerate all possible moves for ships and shpiyards. These are different than the ones used by the SDK because they also include the possibility of no action (indicated by the None entry)
@@ -44,10 +44,10 @@ class rl_agent():
         best_board = Board(obs, config) #best board keeps track of the board resulting from the best possible move for each ship/shipyard
         shipyards = board.current_player.shipyards
         ships = board.current_player.ships
-        random_int = random.randint(1, 100) #pick a random int to determine if move will be exploratory or expoitative
+        random_int = random.randint(1, 100) #pick a random int to determine if move will be exploratory or exploitative
         if random_int>self.epsilon:  #If this is an exploratory move
             #find best actions for each shipyard and ship and store them in the next_action variable for each ship and shipyard
-            best_value = 0 #the best state value for each ship or shipard; is reset for each ship/shipyard
+            best_value = 0 #the best state value for each ship or shipyard; is reset for each ship/shipyard
             
             for shipyard in shipyards: 
                 best_value = 0
