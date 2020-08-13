@@ -1,7 +1,7 @@
 # Halite-Kaggle-Competition
 This repo includes a set of tools that can be used to build and train reinforcement learning agents to play [Halite](https://www.kaggle.com/c/halite). The tools included are:
 * [A few sample pre-trained reinforcement learning agents](#sample-agents)
-* [A Docker container that can be used to remotely train agents](#running-agents-in-a-docker-container)
+* [Commands to run a Docker container to remotely train agents](#running-agents-in-a-docker-container)
 * [A reinforcement learning agent class used to interface between the neural net and the Halite SDK](#reinforcement-learning-agent-design)
 * [A PyTorch neural net used for estimating the value of a given game state](#neural-net-design)
 
