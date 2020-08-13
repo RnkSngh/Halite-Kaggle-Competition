@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Jun 19 15:23:24 2020
-
-@author: User
+Interfaces with the Halite SDK and RL_Agent.py to simulate games against the greedy agent, specified in the greedy_agent.py. To animate a simulated game, 
+use the Jupyter Notebook from the docker container (see README)
 """
 
 from kaggle_environments import make
@@ -11,51 +10,26 @@ from RL_agent import *
 from greedy_agent import *
 import pickle 
 
-agentname = "Neural Net " #name of file that will contain trained neural net paramaters
-net = NoCovNet()
+agentname = "Neural Net " #name of file to save the trained reinforcement learning agent to
+net = NoCovNet() #Neural net to be trained
 #initialize agent
 learning_agent = rl_agent()
 learning_agent_function = learning_agent.run_learning_agent
 
-agents = {"learning":learning_agent_function, 'greedy':greedy_agent}
+agents = {"learning":learning_agent_function, 'greedy':greedy_agent} #later passed into the game environment
 
 # Create a test environment for use later
 board_size = 21
-env = make("halite", {"agentTimeout":60})
+env = make("halite", {"agentTimeout":60}) #increase timeout between moves as agent will take longer to return moves while training
 env.agents.update(agents)
 agent_count = 4
 env.reset(agent_count)
 
 #initialize a variable that will store saved Results to train later
 result_list = []
-for i in range(500):
-    result = env.run(["greedy", "greedy", "greedy", "greedy" ])
+for i in range(500): #play 500 games
+    result = env.run(["learning", "greedy", "greedy", "greedy" ]) #RL agent is at first player index
     result_list.append(result)
-    print (i)
-    rule_update_values(learning_agent, result, .1, .8)
+    rule_update_values(learning_agent, result, .1, .8) #train neural net for played game
 
-torch.save(model.state_dict(), agent_name)
-f = open('result_list2.pickl', 'wb')
-pickle.dump(result_list, f)
-f.close()
-
-
-#env.render(mode="ipython", width=800, height=600)
-
-
-# =============================================================================
-# test_move = learning_agent.run_agent(state.observation, env.configuration)
-# #board = Board(state.observation, environment.configuration)
-# #board.ships['0-1'].next_action = ShipAction.EAST
-# #board.ships['0-2'].next_action = ShipAction.WEST
-# #ship_u = board.ships['0-1']
-# print(len(env.state))
-# result = env.run(['random' , 'random', 'random', 'random'])
-# state1 =  env.state[0]
-# print(len(env.state))
-# print(env)
-# print(env)
-# 
-# =============================================================================
-#will need to keep track for every move for i in 
-    
+torch.save(model.state_dict(), agent_name) # save model to output file
