@@ -1,5 +1,6 @@
 """
-This file contains the agent class that is called by the Halite Kaggle Environment in the local_halite_sdk.py file during games. This class uses the PyTorch neural net specified in the RL_agent.py file to model the value function of game states.
+This file contains the agent class that is called by the Halite Kaggle Environment in the local_halite_sdk.py file during games. 
+This class uses the PyTorch neural net specified in the RL_agent.py file to model the value function of game states.
 """
 
 
@@ -12,7 +13,8 @@ class rl_agent():
     """
     A reinforcement learning agent used to give moves to the Halite SDK through the run_learning_agent method. 
     
-    self.net holds the PyTorch neural net used to estimate the value of a state. The self.optimizer and self.criterion are used by PyTorch during the gradient descent process.       self.learning_moves is an array that keeps track of exploratory moves, and is used decide on what states to train the agent on. 
+    self.net holds the PyTorch neural net used to estimate the value of a state. The self.optimizer and self.criterion are used by PyTorch during the gradient descent process. 
+    self.learning_moves is an array that keeps track of exploratory moves, and is used decide on what states to train the agent on. 
     """
     
     def __init__(self, net):
@@ -28,7 +30,10 @@ class rl_agent():
         '''
         A reinforcement learning agent to play in the Halite game
         
-        This method takes in the current game state as an input, and returns a dict array to the Halite SDK representing the moves that ships and shipyards will take in the next         turn.  The method iterates through all owned ships and shipyards and finds the next possible moves for each ship and shipyard. The game state for each next possible move         is converted to a PyTorch tensor and fed into a neural net to find the value of each possible next state. The best next state for each ship and shipyard is returned in a         dict array.
+        This method takes in the current game state as an input, and returns a dict array to the Halite SDK representing the moves that ships and shipyards will take in the
+        next turn.  The method iterates through all owned ships and shipyards and finds the next possible moves for each ship and shipyard. The game state for each next 
+        possible move is converted to a PyTorch tensor and fed into a neural net to find the value of each possible next state. The best next state for each ship and shipyard 
+        is returned in a dict array.
         Parameters
         ----------
         obs : dict
