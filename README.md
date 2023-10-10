@@ -53,3 +53,6 @@ The values for gamma can be changed in the  ```update_values()``` and  ```rule_u
 
 ## Saving Neural Net Parameters
 Once trained, PyTorch agents are saved in the ```Halite_SDK_Interface.py``` file using the ```torch.save``` method. The saved files can be loaded using the ```torch.load``` method. 
+
+# Acknowledgements
+This project was started during my Summer 1 '20 batch at the [Recurse Center](This project was started during my Summer 1 '20 batch at the Recurse Center. Thank you to everyone in the community for providing a supportive and encouraging space for such a diverse collection of programmers.). Thank you to everyone in the community for providing a supportive and encouraging space for such a diverse collection of programmers.
